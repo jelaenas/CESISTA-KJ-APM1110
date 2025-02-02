@@ -1,9 +1,11 @@
 ---
 title: "SEC1-GROUP 16-CESISTA, KJ-FA1"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 date: "2025-02-02"
 params:
-  filename: "C:/Users/cjere/Downloads/results.txt"
+  filename: C:/Users/cjere/Downloads/results.txt
 ---
 
 ```{r setup, include=FALSE}
@@ -81,6 +83,6 @@ students <- data.frame(scores = scores, gender = gender)
 boxplot(scores ~ gender, data = students, main = "Boxplot of Java Exam Scores by Gender", ylab = "Scores", xlab = "Gender", col = c("red", "blue"))
 
 ```
-
+From the box-plot it looks as though the female students performed better than the male students. It shows that their median, range, maximum score, and minimum score are all higher compared to the male students. However it appears that the highest score came from a male student, however in the box plot it is considered an out lier as it is only represented by a point.
 
 
