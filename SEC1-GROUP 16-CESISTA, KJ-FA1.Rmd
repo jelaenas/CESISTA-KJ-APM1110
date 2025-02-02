@@ -1,0 +1,86 @@
+---
+title: "SEC1-GROUP 16-CESISTA, KJ-FA1"
+output: html_document
+date: "2025-02-02"
+params:
+  filename: "C:/Users/cjere/Downloads/results.txt"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Write the skewness program, and use it to calculate the skewness coefficient of the four examination subjects in results.txt (results.csv). What can you say about these data?
+```{r}
+results <- read.csv(params$filename, header = TRUE)
+
+summary(results)
+
+head(results, n=4)
+tail(results, n= 4)
+
+```
+Pearson has given an approximate formula for the skewness that is easier to calculate than the exact formula given in Equation 2.1.
+
+Write a program to calculate this and apply it to the data in results.txt (results.csv). Is it a reasonable approximation?
+
+$skew=\frac{3(mean-median)}{standard deviation}$
+
+```{r}
+skewness <- function(course) {
+  mean <- mean(course, na.rm = TRUE)  
+  median <- median(course, na.rm = TRUE)  
+  st_dv <- sd(course, na.rm = TRUE) 
+  
+  skew <- (3 * (mean - median)) / st_dv
+  return(skew)
+}
+
+
+skew_arch1 <- skewness(results$arch1)
+skew_prog1 <- skewness(results$prog1)
+skew_arch2 <- skewness(results$arch2)
+skew_prog2 <- skewness(results$prog2)
+
+skew_arch1
+skew_prog1
+skew_arch2
+skew_prog2
+```
+The data includes the gender of the students along with their marks for Arch1, Prog1, Arch2, and Prog2. NA values may indicate that those students were not able to take the examination for that course. It seems to be a reasonable approximation as the data is not large and when taking the summary of the data the mean and median were close.
+
+2.  For the class of 50 students of computing detailed in Exercise 1.1, use R to 
+
+(a)  form the stem-and-leaf display for each gender, and discuss the advantages of this representation compared to the traditional histogram; 
+
+```{r}
+
+females <- c(57, 59, 78, 79, 60, 65, 68, 71, 75, 48, 51, 55, 56, 41, 43,
+             44, 75, 78, 80, 81, 83, 83, 85)
+
+males <- c(48, 49, 49, 30, 30, 31, 32, 35, 37, 41, 86, 42, 51, 53, 56,
+           42, 44, 50, 51, 65, 67, 51, 56, 58, 64, 64, 75)
+```
+Stem-and-Leaf Display of Female Students:
+```{r}
+stem(females)
+```
+Stem-and-Leaf Display of Female Students:
+```{r}
+stem(males)
+```
+For this example, stem-and-leaf display is more appropriate as the data is discrete. Another advantage is that stem-and-leaf is faster compared to historagm, especially here as it would have to be plotted. Additionally stem-and-lead also shows individual data points.
+
+
+(b)  construct a box-plot for each gender and discuss the findings. 
+```{r}
+scores <- c(females, males)
+gender <- rep(c("Female", "Male"), times = c(length(females), length(males)))
+students <- data.frame(scores = scores, gender = gender)
+
+boxplot(scores ~ gender, data = students, main = "Boxplot of Java Exam Scores by Gender", ylab = "Scores", xlab = "Gender", col = c("red", "blue"))
+
+```
+
+
+
