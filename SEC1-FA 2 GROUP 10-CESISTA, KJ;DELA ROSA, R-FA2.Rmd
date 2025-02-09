@@ -1,0 +1,122 @@
+---
+title: "SEC1-FA 2 GROUP 10-CESISTA, KJ;DELA ROSA, R-FA2"
+output: pdf_document
+date: "2025-02-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Use R to illustrate that the probability of getting:
+(a) a head is 0.5 if a fair coin is tossed repeatedly;
+
+```{r}
+n <- 1000 # Number of trials
+# Coin Toss Simulation
+coin_toss <- sample(c("Head", "Tail"), n, replace = TRUE)
+result_heads <- cumsum(coin_toss == "Head") / (1:n)
+mean(coin_toss == "Head")
+
+```
+
+(b) a red card is 0.5 if cards are drawn repeatedly with replacement from awell-shuffled deck;
+
+```{r}
+# Red Card Draw Simulation
+red_card <- sample(c("Red", "Black"), n, replace = TRUE)
+result_red <- cumsum(red_card == "Red") / (1:n)
+mean(red_card == "Red")
+
+```
+
+(c) an even number is 0.5 if a fair die is rolled repeatedly.
+
+```{r}
+# Die Roll Simulation
+dice_roll <- sample(1:6, n, replace = TRUE)
+result_even <- cumsum(dice_roll %% 2 == 0) / (1:n)
+mean(dice_roll %% 2 == 0)
+```
+
+## Plots
+
+```{r}
+par(mfrow = c(1, 3)) # 3 plots in one row
+plot(1:n, result_heads, type = "l", col = "blue", lwd = 2, ylim = c(0, 1),
+main = "Coin Toss: P(Head)", xlab = "Number of Tosses", ylab = "Probability")
+1
+abline(h = 0.5, col = "red", lty = 2)
+plot(1:n, result_red, type = "l", col = "blue", lwd = 2, ylim = c(0, 1),
+main = "Red Card Draw: P(Red)", xlab = "Number of Draws", ylab = "Probability")
+abline(h = 0.5, col = "red", lty = 2)
+plot(1:n, result_even, type = "l", col = "blue", lwd = 2, ylim = c(0, 1),
+main = "Die Roll: P(Even)", xlab = "Number of Rolls", ylab = "Probability")
+abline(h = 0.5, col = "red", lty = 2)
+
+par(mfrow = c(1, 1)) # Reset layout
+```
+
+## Results (n = 20)
+
+```{r}
+head(data.frame(Coin_Toss = coin_toss, Red_Card = red_card, Die_Roll = dice_roll), 20)
+```
+
+4. Amy and Jane are gambling together. A fair coin is tossed repeatedly. Each time a head comes up, Amy wins two euro from Jane, and each time a tail comes up, Amy loses two euro to Jane. Use R to simulate this game 100 times, and estimate:
+
+(a) the number of times that Amy is ahead in these 100 tosses;
+
+(b) how much Amy has won or lost after 100 tosses.
+
+```{r}
+gambling <- function (tosses, amy_wins, amy_money, amy_ahead){
+  outcome <- c()
+  results <- data.frame(
+        outcome = character(0),
+        amys_wins = integer(0),
+        amys_ahead = integer(0),
+        amys_money = numeric(0)
+    )
+    for (i in 1:tosses){
+        coin_flip <- sample(c("H", "T"), size = 1, replace = TRUE)
+        outcome <- c(outcome, coin_flip)
+
+        if (coin_flip == "H") {
+            amy_wins <- amy_wins + 1 #adds a win to Amy
+            amy_money <- amy_money + 2 #adds two euros to Amy's total
+        } else {
+            amy_money <- amy_money - 2 #takes two euros from Amy's total
+        }
+
+        if (amy_money > 0) { #Amy is ahead of Jane in terms of wins if her balance is positive
+            amy_ahead <- amy_ahead + 1
+        }
+
+        results <- rbind(results, data.frame(
+            outcome = coin_flip,
+            amys_wins = amy_wins,
+            amys_ahead = amy_ahead,
+            amys_money = amy_money
+        ))
+        
+    }
+  
+    print("(a) the number of times that Amy is ahead in these 100 tosses;")
+    print(sprintf("Amy won a total of %d times", amy_wins))
+    print(sprintf("Amy was ahead of Jane a total of %d times during the game", amy_ahead)) # answer to (a)
+    
+    print("(b) how much Amy has won or lost after 100 tosses.")
+    if (amy_money > -1) {
+      print(sprintf("Amy won a total of %d euros", amy_money)) #answer to (b) 
+    } else {
+      print(sprintf("Amy lost a total of %d euros", abs(amy_money))) #answer to (b) 
+    }
+
+
+    head(results, 10) #first ten ouctomes of the coin flip
+}
+
+gambling(100, 0, 0, 0)
+```
+
