@@ -1,0 +1,74 @@
+---
+title: "SEC1-FA3-GROUP-10-CESISTA,-KJ-FA3"
+output: pdf_document
+date: "2025-02-17"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+2.  A binary communication channel carries data as one of two sets of signals denoted by 0 and 1. Owing to noise, a transmitted 0 is sometimes received as a 1, and a transmitted 1 is sometimes received as a 0. For a given channel, it can be assumed that a transmitted 0 is correctly received with probability 0.95, and a transmitted 1 is correctly received with probability 0.75. Also, 70% of all messages are transmitted as a 0. If a signal is sent, determine the probability that:
+
+(a) a 1 was received;
+(b) a 1 was transmitted given than a 1 was received.
+
+```{r}
+signal_transmitted_0 <- 0.7
+signal_transmitted_1 <- 1 - signal_transmitted_0
+received_correctly_0 <- 0.95
+received_correctly_1 <- 0.75
+transmitted_0_received_0 <- signal_transmitted_0 * received_correctly_0
+transmitted_0_received_1 <- signal_transmitted_0 * (1-received_correctly_0)
+transmitted_1_received_0 <- signal_transmitted_1 * (1-received_correctly_1)
+transmitted_1_received_1 <- signal_transmitted_1 * received_correctly_1
+total_received_as_0 <- transmitted_0_received_0 + transmitted_1_received_0
+total_received_as_1 <- transmitted_0_received_1 + transmitted_1_received_1
+
+signals <- c(0, 1)
+percent_of_all_messages <- c(signal_transmitted_0, signal_transmitted_1)
+received_correctly <- c(received_correctly_0, received_correctly_1)
+received_as_0 <- c(transmitted_0_received_0, transmitted_1_received_0)
+received_as_1 <- c(transmitted_0_received_1, transmitted_1_received_1)
+
+df <- data.frame(signals, percent_of_all_messages, received_correctly, received_as_0, received_as_1)
+final.df <- rbind(df, c("Total", NA, NA, total_received_as_0, total_received_as_1))
+final.df
+
+cat(sprintf("The probability that a 1 was received is %.1f%%.\n", total_received_as_1 * 100))
+cat(sprintf("The probability that a 1 was transmitted given that a 1 was received is %.1f%%.\n", 
+            transmitted_1_received_1 * 100))
+```
+
+7.  There are three employees working at an IT company: Jane, Amy, and Ava, doing 10%, 30%, and 60% of the programming, respectively. 8% of Jane’s work, 5% of Amy’s work, and just 1% of Ava‘s work is in error. What is the overall percentage of error? If a program is found with an error, who is the most likely person to have written it?
+
+```{r}
+jane_work <- 0.1
+amy_work <- 0.3
+ava_work <- 0.6
+
+jane_error <- 0.08
+amy_error <- 0.05
+ava_error <- 0.01
+
+jane_error_done <- jane_error * jane_work
+amy_error_done <- amy_error * amy_work
+ava_error_done <- ava_error * ava_work
+
+Name <- c("Jane", "Amy", "Ava")
+Percentage_of_Work <- c(jane_work, amy_work, ava_work)
+Percentage_of_Error <- c(jane_error, amy_error, ava_error)
+Percentage_of_Error_Done <- c(jane_error_done, amy_error_done, ava_error_done)
+Overall_Percentage_of_Error <- sum(c(jane_error_done, amy_error_done, ava_error_done))
+
+df <- data.frame(Name, Percentage_of_Work, Percentage_of_Error, Percentage_of_Error_Done)
+final.df <- rbind(df, c("Overall", NA, NA, Overall_Percentage_of_Error))
+final.df
+
+highest_error <- max(df$Percentage_of_Error_Done)
+person_with_highest_error <- df[df$Percentage_of_Error_Done == highest_error, "Name"]
+
+cat(sprintf("The overall percentage of error is %.1f%%.\n", Overall_Percentage_of_Error * 100))
+cat(sprintf("TIf a program is found with an error, the person most likely to have written it is %s.\n", 
+            person_with_highest_error))
+```
