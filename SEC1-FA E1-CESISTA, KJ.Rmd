@@ -1,0 +1,92 @@
+---
+title: "FA E1"
+output:
+  pdf_document: default
+  html_document: default
+date: "2025-02-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+13. A malicious spyware can infect a computer system though the Internet or
+through email. The spyware comes through the Internet 70% of the time
+and 30% of the time, it gets in through email. If it enters via the Internet
+the anti-virus detector will detect it with probability 0.6, and via email, it is
+detected with probability 0.8.
+(a) What is the probability that this spyware infects the system?
+(b) If the spyware is detected, what is the probability that it came through the
+Internet?
+
+```{r}
+spyware_through_internet <- 0.7
+spyware_through_email <- 0.3
+detector_internet <- 0.6
+detector_email <- 0.8
+detected_internet <- spyware_through_internet * detector_internet
+detected_email <- spyware_through_email * detector_email
+total_detected <- detected_internet + detected_email
+infect_internet <- spyware_through_internet * (1 - detector_internet)
+infect_email <- spyware_through_email * (1 - detector_email)
+total_infected <- infect_internet + infect_email
+
+
+spyware <- c("internet", "email")
+probability_of_getting_through <- c(spyware_through_internet, spyware_through_email)
+probability_of_getting_detected <- c(detector_internet, detector_email)
+spyware_detected <- c(detected_internet, detected_email)
+probability_of_getting_infected <- c(infect_internet, infect_email)
+
+df <- data.frame(spyware, probability_of_getting_through, probability_of_getting_detected, 
+                 spyware_detected, probability_of_getting_infected)
+final.df <- rbind(df, c("Total", NA, NA, total_detected, total_infected))
+final.df
+
+cat(sprintf("The probability that the spyware infects the system is %.1f%%\n"
+            , total_infected * 100))
+cat(sprintf("If the spyware is detected, the probablity it came from the internet
+            is %.1f%%\n", (detected_internet/total_detected) * 100))
+```
+
+
+14. Of the emails you receive 20% are spam on average. Your spam filter is able to
+detect 90% of them but also misclassifies as spam 15% of the genuine emails.
+(a) If an email arrives and is marked spam, what is the probability that it really
+is spam?
+(b) If an email arrives and is not marked spam, what is the probability that it
+is legitimate?
+
+```{r}
+spam_email <- 0.2
+genuine_email <- 1 - spam_email
+spam_filter_detect <- 0.9
+spam_filter_misclassified <- 0.15
+spam_marked_as_spam <- spam_email * spam_filter_detect
+spam_marked_as_genuine <- spam_email - spam_marked_as_spam
+genuine_marked_as_spam <- genuine_email * spam_filter_misclassified
+genuine_marked_as_genuine <- genuine_email - genuine_marked_as_spam
+total_marked_as_spam <- spam_marked_as_spam + genuine_marked_as_spam
+total_marked_as_genuine <- spam_marked_as_genuine + genuine_marked_as_genuine
+
+emails <- c("spam", "genuine")
+percent_of_emails <- c(spam_email, genuine_email)
+probability_of_marked_as_spam <- c(spam_filter_detect, spam_filter_misclassified)
+marked_as_spam <- c(spam_marked_as_spam, genuine_marked_as_spam)
+marked_as_genuine <- c(spam_marked_as_genuine, genuine_marked_as_genuine)
+
+df <- data.frame(emails, percent_of_emails, probability_of_marked_as_spam, 
+                 marked_as_spam, marked_as_genuine)
+final.df <- rbind(df, c("Total", NA, NA, total_marked_as_spam, 
+                        total_marked_as_genuine))
+final.df
+
+cat(sprintf("If an email arrives and is marked spam, the probability that it is 
+            really spam is %.2f%%\n", (spam_marked_as_spam/total_marked_as_spam)
+            * 100))
+cat(sprintf("If an email arrives and is not marked spam, the probablity that it 
+            is legitimate is %.2f%%\n", (genuine_marked_as_genuine/total_marked_as_genuine)
+            * 100))
+
+```
+
