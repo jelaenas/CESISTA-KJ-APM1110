@@ -1,0 +1,100 @@
+---
+title: "CESISTA,KJ-FA4"
+author: "Kristen Jelaena Cesista"
+date: "2025-03-03"
+output: pdf_document
+---
+
+5. A geospatial analysis system has four sensors supplying images. The percentage of images supplied by each sensor and the percentage of images relevant to a query are shown in the following tablet
+
+What is the overall percentage of relevant images?
+
+```{r}
+sensor <- c(1, 2, 3, 4)
+percentage_of_images_supplied <- c(15, 20, 25, 40)
+percentage_of_relevant_images <- c(50, 60, 80, 85)
+relevant_images_from_sensor <- (percentage_of_images_supplied/100) * 
+  (percentage_of_relevant_images/100) *100
+non_relevant_images_from_sensor <- (percentage_of_images_supplied/100) * 
+  ((100-percentage_of_relevant_images)/100) *100
+total_relevant_images <- sum(relevant_images_from_sensor)
+total_non_relevant_images <- sum(non_relevant_images_from_sensor)
+
+df <- data.frame(sensor, percentage_of_images_supplied, 
+                 percentage_of_relevant_images, relevant_images_from_sensor, 
+                 non_relevant_images_from_sensor)
+final.df <- rbind(df, c("Total", NA, NA, total_relevant_images, 
+                        total_non_relevant_images))
+final.df
+
+cat(sprintf("The overall percentage of relevant images is %.1f%%", 
+            total_relevant_images))
+```
+
+6. A fair coin is tossed twice.
+Let E1 be the event that both tosses have the same outcome, that is,
+E1 = (HH, TT).
+Let E2 be the event that the first toss is a head, that is, E2 = (HH, HT).
+Let E3 be the event that the second toss is a head, that is, E3 = (TH, HH).
+Show that E1, E2, and E3 are pairwise independent but not mutually independent.
+
+```{r}
+possible_outcomes <- c("HH", "HT", "TH", "TT")
+E1 <- c("HH", "TT")
+E2 <- c("HH", "HT")
+E3 <- c("TH", "HH")
+
+prob_E1 <- length(E1)/length(possible_outcomes)
+prob_E2 <- length(E2)/length(possible_outcomes)
+prob_E3 <- length(E1)/length(possible_outcomes)
+
+
+E1_E2_intersect <- intersect(E1, E2)
+prob_E1_E2_intersect <- length(E1_E2_intersect)/length(possible_outcomes)
+cat(sprintf("The probability of the intersection of E1 and E2 (outcomes: %s) is %.1f%%.\n", 
+            paste(E1_E2_intersect, collapse = ", "), prob_E1_E2_intersect * 100))
+product_E1_E2 <- prob_E1 * prob_E2
+cat(sprintf("The product of E1 and E2 is %.1f%%.\n",product_E1_E2 * 100))
+if (prob_E1_E2_intersect == product_E1_E2) {
+  print("E1 and E2 are pairwise independent.")
+} else {
+  print("E1 and E2 are not pairwise independent.")
+}
+
+E1_E3_intersect <- intersect(E1, E3)
+prob_E1_E3_intersect <- length(E1_E3_intersect)/length(possible_outcomes)
+cat(sprintf("The probability of the intersection of E1 and E3 (outcomes: %s) is %.1f%%.\n", 
+            paste(E1_E3_intersect, collapse = ", "), prob_E1_E3_intersect * 100))
+product_E1_E3 <- prob_E1 * prob_E3
+cat(sprintf("The product of E1 and E3 is %.1f%%.\n",product_E1_E3 * 100))
+if (prob_E1_E3_intersect == product_E1_E3) {
+  print("E1 and E3 are pairwise independent.")
+} else {
+  print("E1 and E3 are not pairwise independent.")
+}
+
+E2_E3_intersect <- intersect(E2, E3)
+prob_E2_E3_intersect <- length(E2_E3_intersect)/length(possible_outcomes)
+cat(sprintf("The probability of the intersection of E2 and E3 (outcomes: %s) is %.1f%%.\n", 
+            paste(E2_E3_intersect, collapse = ", "), prob_E2_E3_intersect * 100))
+product_E2_E3 <- prob_E2 * prob_E3
+cat(sprintf("The product of E2 and E3 is %.1f%%.\n",product_E2_E3 * 100))
+if (prob_E2_E3_intersect == product_E2_E3) {
+  print("E2 and E3 are pairwise independent.")
+} else {
+  print("E2 and E3 are not pairwise independent.")
+}
+
+E1_E2_E3_intersect <- intersect(E1_E2_intersect, E3)
+prob_E1_E2_E3_intersect <- length(E1_E2_E3_intersect)/length(possible_outcomes)
+cat(sprintf("The probability of the intersection of E1, E2, and E3 (outcomes: %s) is %.1f%%.\n", 
+            paste(E1_E2_E3_intersect, collapse = ", "), prob_E1_E2_E3_intersect * 100))
+product_E1_E2_E3 <- prob_E1 * prob_E2 * prob_E3
+cat(sprintf("The product of E1, E2 and E3 is %.1f%%.\n",product_E1_E2_E3 * 100))
+if (prob_E1_E2_E3_intersect == product_E1_E2_E3) {
+  print("E2 and E3 are mutually independent.")
+} else {
+  print("E2 and E3 are not mutually independent.")
+}
+```
+
