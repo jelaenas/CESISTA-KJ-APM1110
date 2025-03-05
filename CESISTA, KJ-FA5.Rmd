@@ -1,0 +1,164 @@
+---
+title: "CESISTA, KJ-FA5"
+author: "Kristen Jelaena Cesista"
+date: "2025-03-05"
+output: pdf_document
+always_allow_html: true
+---
+
+6. An email message can travel through one of three server routes. The percentage
+of errors in each of the servers and the percentage of messages that travel
+through each route are shown in the following table. Assume that the servers
+are independent.
+
+(a) What is the probability of receiving an email containing an error?
+(b) What is the probability that a message will arrive without error?
+(c) If a message arrives without error, what is the probability that it was sent
+through server 1?
+
+```{r}
+Server_Routes <- c("Server 1", "Server 2", "Server 3")
+Percentage_of_Messages <- c(40, 25, 35)
+Percentage_of_Errors <- c(1, 2, 1.5)
+Messages_with_Errors <- (Percentage_of_Messages / 100) * 
+  (Percentage_of_Errors / 100) * 100
+Messages_without_Errors <- (Percentage_of_Messages / 100) * 
+  (1 - (Percentage_of_Errors / 100)) * 100
+Total_Messages_with_Errors <- sum(Messages_with_Errors)
+Total_Messages_without_Errors <- sum(Messages_without_Errors)
+
+df <- data.frame(Server_Routes, Percentage_of_Messages, Percentage_of_Errors, 
+                 Messages_with_Errors, Messages_without_Errors)
+final.df <- rbind(df, c("Total", NA, NA, Total_Messages_with_Errors, 
+                        Total_Messages_without_Errors))
+print(final.df)
+
+cat(sprintf("The probability of receiving an email containing an error is %.5f", 
+            Total_Messages_with_Errors/100))
+cat(sprintf("\nThe probability that a message will arrive without error is %.5f", 
+            Total_Messages_without_Errors/100))
+cat(sprintf("\nThe probability that a message without error was sent through 
+            server 1 is %.3f", Messages_without_Errors[1] / Total_Messages_without_Errors))
+```
+
+9. A software company surveyed managers to determine the probability that they
+would buy a new graphics package that includes three-dimensional graphics.
+About 20% of office managers were certain that they would not buy the package,
+70% claimed that they would buy, and the others were undecided. Of those
+who said that they would not buy the package, only 10% said that they were
+interested in upgrading their computer hardware. Of those interested in buying
+the graphics package, 40% were also interested in upgrading their computer
+hardware. Of the undecided, 20% were interested in upgrading their computer
+hardware.
+
+Let A denote the intention of not buying, B the intention of buying, C the
+undecided, and G the intention of upgrading the computer hardware.
+(a) Calculate the probability that a manager chosen at random will not upgrade
+the computer hardware (P(complement of G)).
+
+(b) Explain what is meant by the posterior probability of B given G, P(B given G).
+
+(c) Construct a tree diagram and use it to calculate the following probabilities:
+P(G), P(B given G), P(B given complement of G), P(C given G), P(C given complement of G).
+
+```{r}
+
+prob_A <- 0.2
+prob_B <- 0.7
+prob_C <- 1 - prob_A - prob_B
+
+prob_G_given_A <- 0.1
+prob_G_given_B <- 0.4
+prob_G_given_C <- 0.2
+
+prob_complement_G_given_A <- 1 - prob_G_given_A
+prob_complement_G_given_B <- 1 - prob_G_given_B
+prob_complement_G_given_C <- 1 - prob_G_given_C
+
+total_prob <- ((prob_G_given_A) * prob_A) + ((prob_G_given_B) * prob_B) + 
+  ((prob_G_given_C) * prob_C)
+post_B <- ((prob_G_given_B) * prob_B) / total_prob
+post_B_complement_G <- ((prob_complement_G_given_B) * prob_B) / (1 - total_prob)
+post_C <- ((prob_G_given_C) * prob_C) / total_prob
+post_C_complement_G <- ((prob_complement_G_given_C) * prob_C) / (1 - total_prob)
+
+cat(sprintf("The probability that a manager will not upgrade the computer 
+            hardware is: %.2f", 1 - total_prob))
+print("The posterior probability of B given G is the probability of a manager 
+      having the intention of buying after it has been determined that they 
+      have intentions of upgrading.")
+cat(sprintf("The posterior probability of B given G is: %.3f", post_B))
+
+plot_tree <- function() {
+  plot(1, 1, type = "n", xlab = "", ylab = "", xlim = c(0, 30), ylim = c(0, 25), axes = FALSE)
+  
+  text(15, 24, "Manager", cex = 1.5, font = 2)
+  
+  text(5, 21, "Does not Intend To Buy\n0.2", cex = 1.2)
+  arrows(15, 24, 2, 20, length = 0.1)
+  text(5, 5, "Interested in Upgrading\n0.1", cex = 1)
+  arrows(2, 20, 2, 5, length = 0.1)
+  text(7, 10, "Not Interested\n0.9", cex = 1)
+  arrows(2, 20, 4, 10, length = 0.1)
+  
+  
+  text(25, 21, "Intends To Buy\n0.7", cex = 1.2)
+  arrows(15, 24, 25, 20, length = 0.1)
+  text(25, 5, "Interested in Upgrading\n0.4", cex = 1)
+  arrows(25, 20, 25, 5, length = 0.1)
+  text(23, 10, "Not Interested\n0.6", cex = 1)
+  arrows(25, 20, 23, 10, length = 0.1)
+  
+  text(12, 19, "Undecided\n0.1", cex = 1.2)
+  arrows(15, 24, 15, 18, length = 0.1)
+  text(9, 1, "Interested in Upgrading\n0.2", cex = 1)
+  arrows(15, 18, 9, 1, length = 0.1)
+  text(21, 1, "Not Interested\n0.8", cex = 1)
+  arrows(15, 18, 21, 1, length = 0.1)
+}
+
+plot_tree()
+
+
+cat(sprintf("The probability of event G is: %.3f", total_prob))
+cat(sprintf("The posterior probability of B given G is: %.3f", post_B))
+cat(sprintf("The posterior probability of B given complement of G is: %.3f", 
+            post_B_complement_G))
+cat(sprintf("The posterior probability of C given G is: %.3f", post_C))
+cat(sprintf("The posterior probability of C given complement of G is: %.3f", 
+            post_C_complement_G))
+
+
+```
+
+13. A malicious spyware can infect a computer system though the Internet or
+through email. The spyware comes through the Internet 70% of the time
+and 30% of the time, it gets in through email. If it enters via the Internet
+the anti-virus detector will detect it with probability 0.6, and via email, it 
+is detected with probability 0.8.
+
+(a) What is the probability that this spyware infects the system?
+
+(b) If the spyware is detected, what is the probability that it came through the
+Internet?
+
+```{r}
+Entered_Via <- c("Internet", "Email")
+Percentage_of_Spyware <- c(0.7, 0.3)
+Anti_Virus_Detect_Probability <- c(0.6, 0.8)
+Virus_Detected <- Percentage_of_Spyware * Anti_Virus_Detect_Probability
+Virus_Infect <- Percentage_of_Spyware * (1-Anti_Virus_Detect_Probability)
+Total_Virus_Detected <- sum(Virus_Detected)
+Total_Virus_Infect <- sum(Virus_Infect)
+
+df <- data.frame(Entered_Via, Percentage_of_Spyware * 100, 
+                 Anti_Virus_Detect_Probability, Virus_Detected, Virus_Infect)
+final.df <- rbind(df, c("Total", NA, NA, Total_Virus_Detected, Total_Virus_Infect))
+print(final.df)
+
+cat(sprintf("The probability of spyware infecting the system is %.2f", 
+            Total_Virus_Infect))
+cat(sprintf("\nIf the spyware is detected, the probability it came through the 
+            internet is %.2f", Virus_Infect[1]/Total_Virus_Infect))
+```
+
