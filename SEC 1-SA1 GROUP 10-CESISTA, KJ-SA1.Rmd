@@ -1,0 +1,284 @@
+---
+title: "SA1"
+author: "Kristen Jelaena Cesista"
+date: "2025-03-16"
+output: pdf_document
+---
+
+Problem 1:
+A company has three factories producing a product. Factory 1 produces x1 of the 
+product, factory 2 produces x2, and factory 3 produces x3, where sum from i = 1 
+to 3 of xi = 1. The defective rates of the products are y1, y2, and y3 
+respectively, where sum from i = 1 to 3 of yi = 0.12.
+
+Write a program (user input for xi and yi) to calculate the probability that 
+a randomly selected product is defective.
+
+Note that your program should render prompt messages to satisfy the following conditions:
+0.10 ≤ xi ≤ 0.40 or 10% ≤ xi ≤ 40% and sum from i = 1 to 3 of xi = 1.
+0.01 ≤ yi ≤ 0.05 or 1% ≤ yi ≤ 5% and sum from i = 1 to 3 of yi = 0.12.
+
+```{r}
+repeat {
+    cat("\nEnter values for x1, x2, and x3 (must sum to 1, with each value from 
+        0.10 to 0.40):\n")
+
+    x1 <- as.numeric(readline("Enter value of x1: "))
+    x2 <- as.numeric(readline("Enter value of x2: "))
+    x3 <- as.numeric(readline("Enter value of x3: "))
+
+    if (x1 + x2 + x3 == 1 && 
+        x1 >= 0.1 && x1 <= 0.4 && 
+        x2 >= 0.1 && x2 <= 0.4 && 
+        x3 >= 0.1 && x3 <= 0.4) {
+        cat(sprintf("x1 is %f. x2 is %f. x3 is %f\n", x1, x2, x3))
+        break
+    }
+
+    cat("\nInvalid input. Please follow the constraints:\n")
+    cat("- The sum of x1, x2, and x3 must be exactly 1.\n")
+    cat("- Each value must be from 0.10 to 0.40.\n")
+}
+
+repeat {
+    cat("\nEnter values for y1, y2, and y3 (must sum to 0.12, with each value 
+        from 0.01 to 0.05):\n")
+    
+    y1 <- as.numeric(readline("Enter value of y1: "))
+    y2 <- as.numeric(readline("Enter value of y2: "))
+    y3 <- as.numeric(readline("Enter value of y3: "))
+
+    if (y1 + y2 + y3 == 0.12 && 
+        y1 >= 0.01 && y1 <= 0.05 && 
+        y2 >= 0.01 && y2 <= 0.05 && 
+        y3 >= 0.01 && y3 <= 0.05) {
+        cat(sprintf("y1 is %f. y2 is %f. y3 is %f", y1, y2, y3))
+        break 
+    }
+
+    cat("\nInvalid input. Please follow the constraints:\n")
+    cat("- The sum of y1, y2, and y3 must be exactly 0.12.\n")
+    cat("- Each value must be from 0.01 to 0.05.\n")
+}
+
+prob_defective <- (x1 * y1) + (x2 * y2) + (x3 * y3)
+cat(sprintf("The probability that a randomly selected product is defective is 
+            %f", prob_defective))
+```
+Problem 2:
+Develop an R program with a front-end interface that allows the user to:
+
+Input the values of a univariate discrete random variable and the associated 
+probabilities to obtain the mean and variance. Input the values of a bivariate 
+discrete random variable and the associated probabilities to obtain the marginal 
+and conditional distributions.
+
+Program Requirements:
+The program should compute the mean and variance of each distribution.
+It should validate that the probabilities are within the range of 0 to 1 and 
+that their total sum is equal to 1.
+The program should provide a probability density function (PDF) and cumulative 
+distribution function (CDF) plot for the distributions.
+
+```{r}
+
+library(ggplot2)
+cat("\nEnter values for univariate discrete random variable X and its probabilities:\n")
+
+x_values <- c()
+p_values <- c()
+total_p <- 0
+
+repeat {
+    cat(sprintf("\n[%d]\n", length(x_values) + 1))
+    x <- as.numeric(readline("Enter value of X: "))
+    p <- as.numeric(readline("Enter probability P(X): "))
+
+    if (p < 0 || p > 1) {
+        cat("Invalid probability. Must be between 0 and 1.\n")
+        next
+    }
+
+    x_values <- c(x_values, x)
+    p_values <- c(p_values, p)
+    total_p <- sum(p_values)
+
+    more <- as.numeric(readline("Enter another value? (1-Yes, 0-No): "))
+    if (more == 0) break
+}
+
+if (total_p != 1) stop("Probabilities must sum to 1.")
+
+mean_x <- sum(x_values * p_values)
+var_x <- sum((x_values - mean_x)^2 * p_values)
+
+cat(sprintf("\nMean: %f\nVariance: %f\n", mean_x, var_x))
+
+barplot(p_values, names.arg = x_values, main="Probability Mass Function (PMF)", 
+        col="lightblue", xlab="X", ylab="P(X)")
+plot(ecdf(x_values), main="Cumulative Distribution Function (CDF)", xlab="X", 
+     ylab="F(X)", col="pink")
+
+cat("\nEnter values for bivariate discrete random variable (X, Y) and joint 
+    probabilities:\n")
+
+x_values <- c()
+y_values <- c()
+p_xy <- c()
+total_p <- 0
+
+repeat {
+    cat(sprintf("\n[%d]\n", length(x_values) + 1))
+    x <- as.numeric(readline("Enter value of X: "))
+    y <- as.numeric(readline("Enter corresponding value of Y: "))
+    p <- as.numeric(readline("Enter joint probability P(X, Y): "))
+
+    if (p < 0 || p > 1) {
+        cat("Invalid probability. Must be between 0 and 1.\n")
+        next
+    }
+
+    x_values <- c(x_values, x)
+    y_values <- c(y_values, y)
+    p_xy <- c(p_xy, p)
+    total_p <- sum(p_xy)
+
+    more <- as.numeric(readline("Enter another pair? (1-Yes, 0-No): "))
+    if (more == 0) break
+}
+
+if (total_p != 1) stop("Joint probabilities must sum to 1.")
+
+unique_x <- unique(x_values)
+unique_y <- unique(y_values)
+
+P_X <- sapply(unique_x, function(x) sum(p_xy[x_values == x]))
+P_Y <- sapply(unique_y, function(y) sum(p_xy[y_values == y]))
+
+cat("\nMarginal Distributions:\n")
+P_X <- tapply(p_xy, x_values, sum)
+P_Y <- tapply(p_xy, y_values, sum)
+
+cat("\nMarginal Distributions:\n")
+cat("P(X):\n")
+print(P_X)
+cat("P(Y):\n")
+print(P_Y)
+
+# Compute Mean and Variance
+unique_x <- as.numeric(names(P_X))
+unique_y <- as.numeric(names(P_Y))
+
+mean_x <- sum(unique_x * P_X)
+mean_y <- sum(unique_y * P_Y)
+
+var_x <- sum((unique_x - mean_x)^2 * P_X)
+var_y <- sum((unique_y - mean_y)^2 * P_Y)
+
+cat(sprintf("\nMean of X: %f  Variance of X: %f", mean_x, var_x))
+cat(sprintf("\nMean of Y: %f  Variance of Y: %f", mean_y, var_y))
+
+# Compute Conditional Distributions
+P_X_given_Y <- matrix(0, nrow = length(unique_x), ncol = length(unique_y))
+P_Y_given_X <- matrix(0, nrow = length(unique_y), ncol = length(unique_x))
+
+for (i in 1:length(unique_x)) {
+  for (j in 1:length(unique_y)) {
+    joint_prob <- sum(p_xy[x_values == unique_x[i] & y_values == unique_y[j]])
+    
+    if (P_Y[j] > 0) {
+      P_X_given_Y[i, j] <- joint_prob / P_Y[j]  # P(X | Y)
+    }
+    
+    if (P_X[i] > 0) {
+      P_Y_given_X[j, i] <- joint_prob / P_X[i]  # P(Y | X)
+    }
+  }
+}
+
+cat("\nConditional Distributions:\n")
+cat("P(X | Y):\n")
+print(P_X_given_Y)
+cat("P(Y | X):\n")
+print(P_Y_given_X)
+
+df <- data.frame(X = x_values, Y = y_values, P = p_xy)
+ggplot(df, aes(x = X, y = Y, fill = P)) + 
+    geom_tile() + 
+    scale_fill_gradient(low = "white", high = "grey") +
+    labs(title = "Joint Probability Mass Function (PMF)", x = "X", y = "Y")
+
+plot(ecdf(p_xy), main="Joint Cumulative Distribution Function (CDF)", 
+     xlab="P(X, Y)", ylab="F(X, Y)", col="red")
+
+
+
+```
+
+Problem 3:
+By generating 10,000 searches in R, carry out a simulation experiment for a 
+search engine going through a list of sites for a given key phrase, until the 
+key phrase is found. You should allow your program to input the probability 
+p that any site will contain the key phrase.
+
+Plot the simulated pdf and calculate its mean and variance, and obtain the 
+simulated conditional distribution of searches when three searches have been 
+carried out without success. Calculate its mean and variance, and satisfy 
+yourself that they are equivalent to the simulated distribution of the 
+complete set. As test data assume each site has a 60% chance of containing the 
+key phrase. To satisfy yourself that the Markov memoryless property holds, 
+obtain estimates of
+
+(a) P(X = 4 given X > 3) and P(X = 1) 
+(b) P(X = 5 given X > 3) and P(X = 2)
+
+where X is the number of searches to the first success.
+```{r}
+repeat {
+    cat("p is the probability that any site will contain the key phrase 
+        (must be between 0 and 1): ")
+    
+    p <- as.numeric(readline("Enter value of p: "))
+
+    if (!is.na(p) && p > 0 && p < 1) {
+        cat(sprintf("Probability that any site will contain the key phrase is 
+                    %f.\n", p))
+        break
+    }
+
+    cat("\nInvalid input. Enter a value between zero and one.\n")
+}
+
+num_simulations <- 10000
+searches <- rgeom(num_simulations, prob = p) + 1
+
+
+hist(searches, xlab = "Number of Searches", main = "Simulated PDF", col = "pink")
+
+mean_searches <- mean(searches)
+var_searches <- var(searches)
+
+cat(sprintf("\nMean number of searches: %f\n", mean_searches))
+cat(sprintf("Variance of number of searches: %f\n", var_searches))
+
+searches_given_3_failures <- searches[searches > 3]  
+mean_given_3_failures <- mean(searches_given_3_failures)
+var_given_3_failures <- var(searches_given_3_failures)
+
+cat(sprintf("\nMean number of searches given at least 3 failures: %f\n",
+            mean_given_3_failures))
+cat(sprintf("Variance of number of searches given at least 3 failures: %f\n", 
+            var_given_3_failures))
+
+prob_X4_given_X3 <- sum(searches == 4) / sum(searches >= 3)
+prob_X1 <- sum(searches == 1) / num_simulations
+prob_X5_given_X3 <- sum(searches == 5) / sum(searches >= 3)
+prob_X2 <- sum(searches == 2) / num_simulations
+
+cat("\nMemoryless property estimates:\n")
+cat(sprintf("P(X = 4 | X > 3): %f\n", prob_X4_given_X3))
+cat(sprintf("P(X = 1): %f\n", prob_X1))
+cat(sprintf("P(X = 5 | X > 3): %f\n", prob_X5_given_X3))
+cat(sprintf("P(X = 2): %f\n", prob_X2))
+
+```
