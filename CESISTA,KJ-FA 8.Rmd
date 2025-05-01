@@ -1,0 +1,104 @@
+---
+title: "CESISTA, KJ-FA8"
+author: "Kristen Jelaena Cesista"
+date: "2025-05-01"
+output: pdf_document
+---
+
+1. An analogue signal received at a detector, measured in microvolts, is 
+normally distributed with mean of 200 and variance of 256.
+
+(a) What is the probability that the signal will exceed 224 microvolts?
+
+(b) What is the probability that it will be between 186 and 224 microvolts?
+
+(c) What is the micro voltage below which 25% of the signals will be?
+
+(d) What is the probability that the signal will be less than 240 microvolts, 
+given that it is larger than 210 microvolts?
+
+(e) Estimate the interquartile range.
+
+(f) What is the probability that the signal will be less than 220 microvolts, 
+given that it is larger than 210 microvolts?
+
+(g) If we know that a received signal is greater that 200 microvolts, what is 
+the probability that is in fact greater than 220 microvolts?
+
+```{r}
+signal_mean <- 200
+signal_var <- 256
+signal_sdev <- sqrt(signal_var)
+
+prob_exceeds_224 <- 1-pnorm(224, signal_mean, signal_sdev)
+cat(sprintf("The probability that the signal will exceed 224 micro Voltage is %.4f", 
+            prob_exceeds_224))
+
+prob_between_186_224 <- pnorm(224, signal_mean, signal_sdev) - 
+  pnorm(186, signal_mean, signal_sdev)
+cat(sprintf("\nThe probability that it will be between 186 and 224 micro Voltage
+            is %.4f", prob_between_186_224))
+
+quartile_below_25 <- qnorm(0.25, signal_mean, signal_sdev)
+cat(sprintf("\nThe micro voltage below which 25 percent of the signals will be %.4f", 
+            quartile_below_25))
+
+prob_less_than_240_union_greater_than_210 <- pnorm(240, signal_mean, signal_sdev)- 
+  pnorm(210, signal_mean, signal_sdev)
+prob_larger_than_210 <- 1 - pnorm(210, signal_mean, signal_sdev)
+prob_less_than_240_given_greater_than_210 <- prob_less_than_240_union_greater_than_210 / 
+  prob_larger_than_210
+cat(sprintf("\nThe probability that the signal will be less than 240 micro Voltage, 
+            given that it is larger than 210 micro Voltage is %.4f", 
+            prob_less_than_240_given_greater_than_210))
+
+iqr_signal <- qnorm(0.75, signal_mean, signal_sdev) - 
+  qnorm(0.25, signal_mean, signal_sdev)
+cat(sprintf("\nThe interquartile range is %.4f", iqr_signal))
+
+prob_greater_than_210_union_less_than_220 <- pnorm(220, signal_mean, signal_sdev) - 
+  pnorm(210, signal_mean, signal_sdev)
+prob_greater_than_210 <- pnorm(210, signal_mean, signal_sdev)
+prob_greater_than_210_given_less_than_220 <- prob_greater_than_210_union_less_than_220 / 
+  prob_greater_than_210
+cat(sprintf("\nThe probability that the signal will be less than 220 micro Voltage, 
+            given that it is larger than 210 micro Voltage is %.4f", 
+            prob_greater_than_210_given_less_than_220))
+
+prob_greater_than_220 <- 1 - pnorm(220, signal_mean, signal_sdev)
+prob_greater_than_200 <- 1- pnorm(200, signal_mean, signal_sdev)
+prob_greater_than_220_given_greater_than_200 <- prob_greater_than_220 / 
+  prob_greater_than_200
+cat(sprintf("\nThe probability that the signal will be greater than 220 
+            micro Voltage is %.4f", 
+            prob_greater_than_220_given_greater_than_200))
+```
+
+
+2. A manufacturer of a particular type of computer system is interested in 
+improving its customer support services. As a first step, its marketing 
+department has been charged with the responsibility of summarizing the extent of 
+customer problems in terms of system failures. Over a period of six months, 
+customers were surveyed and the amount of downtime (in minutes) due to system 
+failures they had experienced during the previous month was collected. The average 
+downtime was found to be 25 minutes and a variance of 144. If it can be assumed 
+that downtime is normally distributed:
+
+(a) obtain bounds which will include 95% of the downtime of all the customers;
+
+(b) obtain the bound above which 10% of the downtime is included.
+
+```{r}
+downtime_mean <- 25
+downtime_var <- 144
+downtime_sdev <- sqrt(downtime_var)
+
+downtime_95_bounds <- bounds_95 <- qnorm(c(0.025, 0.975), downtime_mean, 
+                                         downtime_sdev)
+cat(sprintf("The bounds which will include 95%% of the downtime of all the 
+            costumers are %.3f to %.3f", downtime_95_bounds[1], downtime_95_bounds[2]))
+
+downtime_bound_above_10 <- qnorm (0.9, downtime_mean, downtime_sdev)
+cat(sprintf("\nThe bound above which 10%% of downtime included is %.3f", 
+            downtime_bound_above_10))
+```
