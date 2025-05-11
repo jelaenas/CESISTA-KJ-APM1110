@@ -1,0 +1,183 @@
+---
+title: "FA 9 GROUP 6-AWIT, JT; CESISTA, KJ; DELOYOLA, JR-FA 9"
+author: "Kristen Jelaena Cesista"
+date: "2025-05-11"
+output: pdf_document
+---
+The chosen variable is the time (in seconds) it takes FEU students to climb the 
+stairs from SB ground to ATM machine.
+
+These are the collected data:
+7.3
+
+8.8
+
+10.7
+
+11.2
+
+11.1
+
+12.5
+
+6.65
+
+8.31
+
+11.06
+
+12.63
+
+6.02
+
+7.69
+
+8.8
+
+8.47
+
+8.95
+
+10.756
+
+6.67
+
+10.238
+
+11.11
+
+8.513
+
+11.11
+
+10.46
+
+8.50
+
+8.67
+
+5.71
+
+4.7
+
+10.94
+
+9.964
+
+10.232
+
+9.316
+
+8
+
+8.817
+
+10.88
+
+4.610
+
+11.574
+
+9.03
+
+14.660
+
+11.424
+
+10.723
+
+8.11
+
+10.21
+
+11.445
+
+10.8
+
+9.157
+
+12.174
+
+7.509
+
+8.956
+
+11.10
+
+11.98
+
+9.204
+
+10.50
+
+12.532
+
+12.43
+
+10.155
+
+7.36
+
+
+```{r}
+time <- c(
+  7.3, 8.8, 10.7, 11.2, 11.1, 12.5, 6.65, 8.31, 11.06, 12.63,
+  6.02, 7.69, 8.8, 8.47, 8.95, 10.756, 6.67, 10.238, 11.11, 8.513,
+  11.11, 10.46, 8.50, 8.67, 5.71, 4.7, 10.94, 9.964, 10.232, 9.316,
+  8, 8.817, 10.88, 4.610, 11.574, 9.03, 14.660, 11.424, 10.723, 8.11,
+  10.21, 11.445, 10.8, 9.157, 12.174, 7.509, 8.956, 11.10, 11.98, 9.204,
+  10.50, 12.532, 12.43, 10.155, 7.36
+)
+
+hist(time, main = "Histogram of Data", xlab = "Values", col = "pink", breaks = 15)
+cat("The histogram using R programming is similar to the one we made using excel,
+however the biggest difference is R programming used an interval of 0.5 
+seconds while we used an interval of 1 second.")
+
+count <- length(time)
+mean_time <- mean(time)
+sdev_time <- sd(time)
+
+cat(sprintf("The mean of the collected data is %.4f and the standarad deviation 
+            is %f.", mean_time, sdev_time))
+
+within_1sdev <- time[abs(time - mean_time) < sdev_time]
+count_within_1sdev <- length(within_1sdev)
+percent_within_1sdev <- count_within_1sdev/count * 100
+cat(sprintf("The number of values that fall within one standard deviation of the 
+            mean is %d, with the percantage of values within it being %.2f.", 
+            count_within_1sdev, percent_within_1sdev))
+
+within_2sdev <- time[abs(time - mean_time) < 2 * sdev_time]
+count_within_2sdev <- length(within_2sdev)
+percent_within_2sdev <- count_within_2sdev/count * 100
+cat(sprintf("The number of values that fall within two standard deviation of the 
+            mean is %d, with the percantage of values within it being %.2f.", 
+            count_within_2sdev, percent_within_2sdev))
+
+within_3sdev <- time[abs(time - mean_time) < 3 * sdev_time]
+count_within_3sdev <- length(within_3sdev)
+percent_within_3sdev <- count_within_3sdev/count * 100
+cat(sprintf("The number of values that fall within three standard deviation of 
+            the mean is %d, with the percantage of values within it being %.2f. 
+            ", count_within_3sdev, percent_within_3sdev))
+
+cat("For normal distribution, it is expected that 68% of the data falls within
+one standard deviation (sdev) of the mean, about 95% falls within two sdevs, 
+and about 99.7% within three sdevs. As the computed value is near these 
+percentages, the data follows normal distribution.")
+
+result_time <- shapiro.test(time)
+p_value <- result_time$p.value
+cat(sprintf("When conducting a Shapiro Wilke test, data is considered to be 
+normal if p value is greather than 0.05. As the p-value of our data 
+is %f, it follows normal distribution", p_value))
+
+qqnorm(time)
+qqline(time, col = "blue")
+
+cat("Since most data follow the blue line, it shows that data is normal. 
+However, since there are a few low and high values, we can see that there 
+are tail deviationsm especially on the left.")
+```
+
